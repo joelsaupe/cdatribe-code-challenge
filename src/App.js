@@ -28,7 +28,7 @@ const cache = new InMemoryCache();
 
 const link = new HttpLink({
   uri: "https://staging.selfdetermine.net/graphql",
-  credentials: "include",
+  credentials: "omit",
 });
 
 const client = new ApolloClient({
