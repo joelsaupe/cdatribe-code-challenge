@@ -42,7 +42,7 @@ const Login = () => {
   const handleSubmit = form => {
     console.log({ form })
 
-    login({ variables: form });
+    login({ variables: { c: form } });
   };
 
   console.log(stuff);
