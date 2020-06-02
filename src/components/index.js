@@ -6,7 +6,7 @@ export const Container = props => <div {...props} className="container" />
 
 export const Section = props => <section {...props} className="section" />
 
-export const Notification = ({ type, props }) => <div {...props} className={['notification', type && `is-${type}`].filter(Boolean).join(' ')} />
+export const Notification = ({ type, ...props }) => <div {...props} className={['notification', type && `is-${type}`].filter(Boolean).join(' ')} />
 
 export const Form = ({ onSubmit, loading, children, error: errorProp, ...props }) => {
   const methods = useForm();
