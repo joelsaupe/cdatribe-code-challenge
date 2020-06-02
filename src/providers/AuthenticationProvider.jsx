@@ -8,6 +8,7 @@ const useLogin = () => {
   const [login, meta] = useMutation(gql`
     mutation ($c: AuthProviderCredentialsInput) {
       loginUser(credentials: $c) {
+        token
         user {
           email
           roles {
@@ -64,11 +65,16 @@ export const AuthenticationContext = React.createContext({})
 export const useAuthenticationContext = () => React.useContext(AuthenticationContext)
 
 export const AuthenticationProvider = props => {
-  const [user, setUser] = React.useState(null)
+  const [token, setToken] = React.useState(window.sessionStorage.getItem('cdatribe:token'))
 
-  if (!user) {
-    return <Login onSuccess={setUser} />
+  const onLogin = ({ token }) => {
+    window.sessionStorage.setItem('cdatribe:token', token)
+    setToken(token)
   }
 
-  return <AuthenticationContext.Provider {...props} value={user} />
+  if (!token) {
+    return <Login onSuccess={onLogin} />
+  }
+
+  return <AuthenticationContext.Provider {...props} value={token} />
 }

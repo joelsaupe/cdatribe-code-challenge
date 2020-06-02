@@ -27,5 +27,5 @@ export const UserDetails = () => {
 
   console.log({ loading, data, error })
 
-  return 'hi'
+  return JSON.stringify(data) || "{}"
 }
