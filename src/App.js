@@ -36,21 +36,24 @@ const client = new ApolloClient({
   link,
 });
 
+const useLogin = () => {
+  const [login, meta] = useMutation(LOGIN_USER, { errorPolicy: 'ignore' });
+
+  return [
+    form => login({ variables: { c: form }}),
+    meta,
+  ]
+}
+
 const Login = () => {
-  const [login, stuff] = useMutation(LOGIN_USER);
+  const [login, meta] = useLogin()
 
-  const handleSubmit = form => {
-    console.log({ form })
-
-    login({ variables: { c: form } });
-  };
-
-  console.log(stuff);
+  console.log(meta);
 
   return (
     <Section>
       <Container>
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={login} {...meta}>
           <Input
             type="email"
             name="email"

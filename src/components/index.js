@@ -6,34 +6,56 @@ export const Container = props => <div {...props} className="container" />
 
 export const Section = props => <section {...props} className="section" />
 
-export const Form = ({ onSubmit, ...props }) => {
+export const Notification = ({ type, props }) => <div {...props} className={['notification', type && `is-${type}`].filter(Boolean).join(' ')} />
+
+export const Form = ({ onSubmit, loading, children, error: errorProp, ...props }) => {
   const methods = useForm();
 
+  const errorMessage = ((errorProp || {}).graphQLErrors || [])
+    .map(error => error.message)
+    .filter(Boolean)
+    .join(' ')
+
+  console.log({ errorMessage, errorProp })
+
   return (
-    <FormContext { ...methods}>
-      <form {...props} onSubmit={methods.handleSubmit(onSubmit)} />
+    <FormContext { ...methods} loading={loading}>
+      <form {...props} onSubmit={methods.handleSubmit(onSubmit)}>
+        {!!errorMessage && <Notification type="danger">{errorMessage}</Notification>}
+        {children}
+      </form>
     </FormContext>
   );
 }
 
 export const Input = ({ label, ...props }) => {
-  const { register } = useFormContext();
+  const { register, loading } = useFormContext();
+
   const uuid = React.useMemo(generateUUID, []);
 
   return (
     <div className="field">
-      {!!label && <label class="label" htmlFor={uuid}>{label}</label>}
+      {!!label && <label className="label" htmlFor={uuid}>{label}</label>}
       <div className="control">
-        <input {...props} className="input" id={uuid} ref={register} />
+        <input {...props} className="input" disabled={loading} id={uuid} ref={register} />
       </div>
     </div>
   )
 }
 
-export const Button = ({ color, ...props }) => (
-  <button
-    type="button"
-    {...props}
-    className={['button', color && `is-${color.toLowerCase()}`].filter(Boolean).join(' ')}
-  />
-)
+export const Button = ({ color, type, ...props }) => {
+  const form = useFormContext()
+
+  return (
+    <button
+      type={type || "button"}
+      disabled={!!(form && form.loading)}
+      {...props}
+      className={[
+        'button',
+        color && `is-${color.toLowerCase()}`,
+        !!(form && form.loading && type === "submit") && 'is-loading',
+      ].filter(Boolean).join(' ')}
+    />
+  )
+}
