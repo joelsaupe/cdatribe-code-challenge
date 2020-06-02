@@ -16,8 +16,6 @@ export const Form = ({ onSubmit, loading, children, error: errorProp, ...props }
     .filter(Boolean)
     .join(' ')
 
-  console.log({ errorMessage, errorProp })
-
   return (
     <FormContext { ...methods} loading={loading}>
       <form {...props} onSubmit={methods.handleSubmit(onSubmit)}>
